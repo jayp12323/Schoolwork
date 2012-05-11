@@ -1,0 +1,61 @@
+
+import java.util.*;//arrays copy
+import javax.swing.JOptionPane;
+
+
+public class HelloWorld {
+
+static int l,z;
+	
+public static void main(String[] args) { 
+	long N = (long)Math.pow(2, 13);
+    int sqN = (int)Math.sqrt(N);
+    System.out.println(sqN);
+
+    // initially assume all integers are prime
+    boolean[] isPrime = new boolean[sqN + 1];
+    for (int i = 2; i <= sqN; i++) {
+        isPrime[i] = true;
+    }
+
+    // mark non-primes <= N using Sieve of Eratosthenes
+    for (int i = 2; i*i <= sqN; i++) {
+
+        // if i is prime, then mark multiples of i as nonprime
+        // suffices to consider mutiples i, i+1, ..., N/i
+        if (isPrime[i]) {
+            for (int j = i; i*j <= sqN; j++) {
+                isPrime[i*j] = false;
+            }
+        }
+    }
+    ArrayList<Long> list = new ArrayList<Long>();
+    // count primes
+    int primes = 0;
+    for (int i = 2; i <= sqN; i++) {
+        if (isPrime[i])
+        {
+			if(N % i==0)
+			{
+				list.add((long)i);
+				list.add(N/i);
+				long temp = N;
+				int itemp = i*i;
+				while(temp%itemp==0)
+				{
+					list.add((long)itemp);
+					list.add(N/itemp);
+					itemp*=itemp;
+				}
+			}
+	
+
+        }
+    }
+    System.out.println(list);
+}
+}
+
+
+	 
+

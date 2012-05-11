@@ -1,0 +1,307 @@
+import java.awt.*;
+import javax.swing.*;
+import java.util.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+
+public class Maze
+
+{
+	public final int MAXROW = 3;
+	public final int MAXCOL = 3;
+	public DrawRooms drawroom;
+	public int row,col;
+	public int up;
+	public int down;
+	public int left;
+	public int right;
+	public int[] current;
+	
+	public int[] getCurrent() {
+		return current;
+	}
+
+
+
+	public void setCurrent(int col,int row) {
+		int temp[] = {col,row};
+		this.current = temp;
+	}
+
+
+
+	public int getUp() {
+		return grid[col][row-1];
+	}
+
+
+
+	public int getDown() {
+		return grid[col][row+1];
+	}
+
+	public int getLeft() {
+		return grid[col-1][row];
+	}
+
+
+	public int getRight() {
+		return grid[col-1][row];
+	}
+
+
+	public String getFacing() {
+		return facing;
+	}
+
+
+	public void setFacing(String facing1) {
+		this.facing = facing1;
+	}
+public int[][] getgrid(){
+	return grid;
+}
+
+	public String facing = "down";
+	public mazegui Mazegui;
+
+ 	public int[][] grid =
+	// 2d array representation of the network
+ 	// 1 is a valid path, 0 is walls
+ 
+ 	{ 
+ 		/*{0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+		{1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0},
+		{0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0},
+		{0,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,1,0},
+		{0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0},
+		{0,1,0,1,1,1,0,1,1,1,0,0,0,1,0,1,0,1,0},
+		{0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0},
+		{0,1,1,1,0,1,1,1,1,1,1,1,0,1,0,1,1,1,0},
+		{0,0,0,1,0,1,0,0,0,0,0,1,1,1,0,1,0,1,1},
+		{0,1,1,1,0,1,0,1,1,1,0,1,0,1,0,1,0,1,0},
+		{1,1,0,0,1,1,0,1,0,1,0,1,1,0,1,1,0,0,0},
+		{0,1,1,0,1,0,0,0,1,0,1,1,0,1,1,0,0,1,1},
+		{1,1,0,0,1,1,1,0,1,0,0,1,1,1,0,0,1,1,0},
+		{0,1,1,0,0,0,1,0,1,1,0,0,0,1,1,1,1,0,1},
+		{0,0,1,1,1,0,1,1,1,0,0,0,1,1,0,0,1,0,1},
+		{0,1,1,0,1,1,1,0,1,0,0,0,1,0,0,0,0,1,1},
+		{0,1,0,0,0,1,0,0,1,1,1,1,1,1,1,1,1,0,1},
+		{1,1,1,1,0,1,1,1,0,0,0,1,0,0,1,0,1,0,1},
+		{1,0,0,1,0,1,0,1,1,1,0,0,0,0,0,1,1,0,1},*/
+ 			{1,0,0,1},
+ 			{1,1,0,1},
+ 			{0,1,1,1},
+ 			{2,1,0,3}
+ 			
+	};
+	 
+   private boolean fateDecided = false;
+
+ public Maze()
+ {
+	 begin();
+ }
+ 
+ //starts with a random room
+public void begin() 
+{
+	Random generator = new Random();
+
+	col = generator.nextInt(MAXROW + 1);
+	row = generator.nextInt(MAXCOL + 1);
+			  
+	while (grid[col][row] != 1)
+	{
+		col = generator.nextInt(MAXROW + 1);
+		row = generator.nextInt(MAXCOL + 1);
+	}
+	setCurrent(col,row);  
+//	traverse(col, row); //call method to begin search
+}
+
+
+
+//***********************************
+//  Method to determine valid rooms
+//***********************************
+ 
+// if grid holds a 1, it is a valid, unvisited room
+//0 is not a room
+// 3 is a tried, failed room
+// 7 is part of the path visited
+
+//checks to see if a room is valid
+public boolean valid(int col, int row)
+{
+	if (row >= 0 && row <= MAXROW && col >= 0 && col <= MAXCOL)
+	{
+		if(grid[col][row] == 1)
+			return true;
+		else return false;
+	}
+	
+	return false;
+}
+
+
+//*************************************
+// method to traverse maze recursively
+//*************************************
+
+//isn't used, shows recursion
+/*public boolean traverse (int col, int row)
+{
+   if (valid (col, row)) //determine if the cell holds a 1
+       {
+        grid[col][row] = 3;  // marks cell as tried and sets it to 3
+        if (row == MAXROW && col == MAXCOL)
+        	fateDecided = true;  // maze is solved, you lose.
+			else
+			{
+				if (row == MAXROW && col == 0)
+					fateDecided = true; //maze is solved, you win!
+				else
+				{	
+					
+					if(!fateDecided)
+					{
+						String turn = getTurn("right");
+						Mazegui.turn(turn);
+						setFacing("right");
+						
+						fateDecided = traverse (col, row + 1);
+
+						
+						
+					}
+					
+					if (!fateDecided)  			// if that did not work, 
+					{
+						fateDecided = traverse (col + 1, row);
+						String turn =getTurn("down");
+						Mazegui.turn(turn);
+
+						setFacing("down");
+					}// move right
+					if (!fateDecided)
+					{// if that did not work, 
+						String turn =getTurn("left");
+						Mazegui.turn(turn);
+
+						setFacing("left");
+						
+
+					}// move up
+					if (!fateDecided)
+					{// if that did not work, 
+						String turn =	getTurn("up");
+						Mazegui.turn(turn);
+
+						setFacing("up");
+						fateDecided = traverse (col - 1, row);
+
+// move left
+					}
+				}
+         	if (fateDecided)  // the final path marked when the unwind occurs
+          	  grid[row][col] = 7; 
+			}  // closes if valid
+       } 
+	return fateDecided;    
+	} 
+*/
+//gives the direction facing after a specific turn while facing a specific direction
+
+public String getTurn(String later) //determines direction of turn in 3D graphics
+{
+
+	if (facing.equalsIgnoreCase("up"))
+	{
+		if(later.equalsIgnoreCase("left"))
+			return "right";
+		else if(later.equalsIgnoreCase("right"))
+			return "left";
+		else if(later.equalsIgnoreCase("up"))
+			return "down";
+		else 
+			return "up";
+			
+	}
+
+	if (facing.equalsIgnoreCase("left"))
+	{
+		if(later.equalsIgnoreCase("left"))
+			return "up";
+		else if(later.equalsIgnoreCase("right"))
+			return "down";
+		else if(later.equalsIgnoreCase("up"))
+			return "right";
+		else
+			return "left";
+	}
+	
+	if (facing.equalsIgnoreCase("right"))
+	{
+		if(later.equalsIgnoreCase("left"))
+			return "down";
+		else if (later.equalsIgnoreCase("right"))
+			return "up";
+		else if(later.equalsIgnoreCase("up"))
+			return "left";
+		else
+			return "right";
+	}
+	
+	else
+	{
+		if(later.equalsIgnoreCase("right"))
+			return "right";
+		else if(later.equalsIgnoreCase("left"))
+			return "left";
+		else if(later.equalsIgnoreCase("up"))
+			return "up";
+		else
+			return "down";
+	}
+	
+}
+
+// gives the coordinate changes when facing a direction
+
+public int[] getgridturn(){
+	if(facing.equalsIgnoreCase("up"))
+	{
+		int[] x = {-1,0};
+		return x;
+	}
+	if(facing.equalsIgnoreCase("down"))
+	{
+		int[] x = {1,0};
+		return x;
+	}
+	if(facing.equalsIgnoreCase("left"))
+	{
+		int[] x = {0,-1};
+		return x;
+	}
+	else
+	{
+		int[] x = {0,1};
+		return x;
+	}
+}
+
+
+
+public String toString() {
+	for (int x = 0;x<MAXROW+1;x++)
+	{
+		for(int y=0;y<MAXCOL+1;y++)
+			System.out.print(grid[x][y] + " ");
+		System.out.println("\n");
+	}
+	return "";
+}
+
+ }

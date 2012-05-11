@@ -1,0 +1,197 @@
+/*
+ Enter your code here. Read input from STDIN. Print output to STDOUT
+ Your class should be named Solution
+*/
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.math.BigInteger;
+import java.util.*;
+
+
+public class Solution
+{
+	private static int[] n2;
+	private static BigInteger N,K,sqK;
+	private static long Klong,sqk4;
+	private static String line,line2;
+	static LinkedList<Thread> t = new LinkedList<Thread>();
+	public static ArrayList<BigInteger> temp1,temp2,temp3,temp4;
+   	public static void main(String[] args) {	   		
+   	
+// Read in the first line of the file, set the N and K variables   		
+	try {
+//		BufferedReader scan = new BufferedReader(new InputStreamReader(System.in));   
+		BufferedReader scan = new BufferedReader(new FileReader(args[0]));   
+
+	    line = scan.readLine();
+	    line2 = scan.readLine();
+	    Scanner linescan = new Scanner(line);
+	    N = linescan.nextBigInteger();
+	    Klong = linescan.nextLong();
+	    K = new BigInteger(Long.toString(Klong));
+	    //used for finding the factors. It is only necessary to go up to sqrt(K) because  every divisor comes with a pair
+	    sqK = new BigInteger(Long.toString((long)Math.ceil(Math.sqrt(Klong))));
+	    sqk4 = (long)Math.floor(sqK.doubleValue()/4);
+	} catch (Exception e) {
+	    System.err.println("Error:" + e.getMessage());
+	}
+
+ //Set up divisors array
+  ArrayList<BigInteger> divisors = new ArrayList<BigInteger>();
+  if (sqk4<=1){
+	  temp1 = fillDivisors(temp1,1,sqK.longValue()+1);
+  	temp1 = checkDivisors(temp1);
+   	}
+  else
+  {
+Runnable r1 = new Runnable()
+{
+	public void run() {
+
+		temp1 = fillDivisors(temp1,1,sqk4);
+
+		temp1 = checkDivisors(temp1);
+
+	}
+	
+	
+};
+
+Runnable r2 = new Runnable()
+{
+
+	public void run() {
+		temp2 = fillDivisors(temp2,sqk4+1,2*sqk4);
+		temp2 = checkDivisors(temp2);
+
+	}
+	
+	
+};
+
+Runnable r3 = new Runnable()
+{
+
+	public void run() {
+		temp3 = fillDivisors(temp1,sqk4*2+1,3*sqk4);
+		temp3 = checkDivisors(temp3);
+
+	}
+	
+	
+};
+
+Runnable r4 = new Runnable()
+{
+
+	public void run() {
+		temp4 = fillDivisors(temp1,3*sqk4,sqK.longValue()+1);
+		temp4 = checkDivisors(temp4);
+
+	}
+};
+  Thread t1 = new Thread(r1);
+  Thread t2 = new Thread(r2);
+  Thread t3 = new Thread(r3);
+  Thread t4 = new Thread(r4);
+  t1.start();
+  t2.start();
+  t3.start();
+  t4.start();
+  
+  try {
+	t1.join();
+	t2.join();
+	t3.join();
+	t4.join();
+
+} catch (InterruptedException e) {
+	e.printStackTrace();
+}
+  }
+  if(temp1 !=null)
+	  divisors.addAll(temp1);
+  if(temp2 !=null)
+
+	  divisors.addAll(temp2);
+  if(temp3 !=null)
+
+	  divisors.addAll(temp3);
+  if(temp4 !=null)
+	  divisors.addAll(temp4);
+//  System.out.println(divisors);
+
+  
+  
+  
+  
+  
+  
+//   int k=0;
+//   // the size of the divisor array shrinks when one is a factor of an unfriendly number
+//	while(k<divisors.size())
+//	{	
+//	  String[] nnnn = line2.split(" ");
+//	  for(int j=0;j<nnnn.length;j++)
+//	  {
+//		  BigInteger temp = new BigInteger(nnnn[j]);
+//		  if(temp.remainder((BigInteger)divisors.get(k))==BigInteger.ZERO)
+//		  {
+//			  // k-- to keep the index variable at the correct spot, other wise it would skip the following index
+//				  divisors.remove(k--);
+//				  break;
+//		  }
+//	  }
+//	  k++;
+//	  
+//	}
+	// the remaining divisors will be the ones that arent factorable into any of the unfriendly numbers
+	System.out.println(divisors.size());
+  
+  }
+   	public static ArrayList<BigInteger> fillDivisors(ArrayList<BigInteger> temp,long num1, long num2)
+   	{
+ 		  temp = new ArrayList<BigInteger>();
+   	  for(long i=num1;i<num2;i++)
+   	  {
+   		  BigInteger i2 = new BigInteger(Long.toString(i));
+   		  //if it is a divisor, add it to the array
+   		if(K.remainder(i2)==BigInteger.ZERO)
+   		{
+
+   			temp.add(i2);
+   			if(!i2.equals(sqK))
+   				temp.add(K.divide(i2));
+   		}
+   	  }
+   		return temp;
+   	}
+   	
+   	public static ArrayList<BigInteger> checkDivisors(ArrayList<BigInteger> temp)
+   	{
+   	   int k=0;
+   	   // the size of the divisor array shrinks when one is a factor of an unfriendly number
+   		while(k<temp.size())
+   		{	
+   		  String[] nnnn = line2.split(" ");
+   		  for(int j=0;j<nnnn.length;j++)
+   		  {
+   			  BigInteger temp2 = new BigInteger(nnnn[j]);
+   			  if(temp2.remainder((BigInteger)temp.get(k))==BigInteger.ZERO)
+   			  {
+   				  // k-- to keep the index variable at the correct spot, other wise it would skip the following index
+   					  temp.remove(k--);
+   					  break;
+   			  }
+   		  }
+   		  k++;
+   		  
+   		}
+   		return temp;
+   		
+   	}
+   	
+	   		   	
+}

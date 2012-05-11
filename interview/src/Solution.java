@@ -2,112 +2,145 @@
  Enter your code here. Read input from STDIN. Print output to STDOUT
  Your class should be named Solution
 */
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.InputStreamReader;
-import java.math.BigInteger;
 import java.util.*;
-
+import java.io.*;
+import java.lang.Math;
+import java.math.*;
 
 public class Solution
 {
-	private static int[] n2;
-	private static BigInteger N,K;
-	private static long Klong;
-	private static String line,line2;
-	static LinkedList<Thread> t = new LinkedList<Thread>();
-   	public static void main(String[] args) {	   		
-   	
-// Read in the first line of the file, set the N and K variables   		
-	try {
-//		BufferedReader scan = new BufferedReader(new InputStreamReader(System.in));   
-		BufferedReader scan = new BufferedReader(new FileReader(args[0]));   
-	    line = scan.readLine();
-	    line2 = scan.readLine();
+    private static long upperLimit;
+    private static long N;
+    private static int sqN;
+    private static long K; 
+    private static boolean[] flags;
+    private static Hashtable<Long, Integer> hash;
+//    private static int[] primes;
+    private static LinkedList<Long> list = new LinkedList<Long>();
+    private static String line,line2;
+    private static  ArrayList<Long> primes = new ArrayList<Long>();
+
+
+    public static void main(String[] args) {
+	    try {
+             //   	BufferedReader scan = new BufferedReader(new InputStreamReader(System.in));   
+
+			BufferedReader scan = new BufferedReader(new FileReader(args[0]));   
+
+			line = scan.readLine();
+		    line2 = scan.readLine();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	    Scanner linescan = new Scanner(line);
-	    N = linescan.nextBigInteger();
-	    Klong = linescan.nextLong();
-	    K = new BigInteger(Long.toString(Klong));
+	    N = linescan.nextLong();
+	    K = linescan.nextLong();
+//	    testValue = new BigInteger(Long.toString(Klong));
 	    //used for finding the factors. It is only necessary to go up to sqrt(K) because  every divisor comes with a pair
-	} catch (Exception e) {
-	    System.err.println("Error:" + e.getMessage());
-	}
+	    sqN = ((int)Math.ceil(Math.sqrt(K)));
+	    System.out.println(N + " " + sqN);
+        primes = primes();
+//        System.out.println(returnVal());
+    }
 
- //Set up divisors array
-  ArrayList<BigInteger> divisors = new ArrayList<BigInteger>();
-  boolean div2 = true;
-  boolean div3 = true;
-  boolean div5 = true;
-  if(K.remainder(new BigInteger("2"))!=BigInteger.ZERO)
-  {
-	  div2 = false;
-  }
-  if(K.remainder(new BigInteger("3"))==BigInteger.ZERO)
-  {
-		div3 = false;
-  } 
-  if(K.remainder(new BigInteger("5"))!=BigInteger.ZERO)
-  {
-		div5 = false;
-  }
-  int two = 0;
-  int three =0;
-  int five = 0;
-  System.out.println(divisors);
 
-  for(long i=1;i*i<K.longValue();i++)
-  {
-	  if (div2==false)
-	  {
-		  two = (two + 1) % 2;
-		  if(two==0)
-		  	continue;
-	  }
-	  
-	  if (div3==false)
-	  {
-		  three = (three + 1) %3;
-		  if(three==0)
-		  	continue;
-	  }
-	  
-	  if (div5==false)
-	  {
-		  five = (five + 1) % 5;
-		  if(five==0)
-		  	continue;
-	  }
-	  System.out.println(i);
-	  BigInteger i2 = new BigInteger(Long.toString(i));
-	  //if it is a divisor, add it to the array
-	if(K.remainder(i2)==BigInteger.ZERO)
-	{
-		divisors.add(i2);
-		divisors.add(K.divide(i2));
-	}
-  }
-  System.out.println(divisors);
-   int k=0;
-   // the size of the divisor array shrinks when one is a factor of an unfriendly number
-	while(k<divisors.size())
-	{	
-	  String[] nnnn = line2.split(" ");
-	  for(int j=0;j<nnnn.length;j++)
-	  {
-		  BigInteger temp = new BigInteger(nnnn[j]);
-		  if(temp.remainder((BigInteger)divisors.get(k))==BigInteger.ZERO)
-		  {
-			  // k-- to keep the index variable at the correct spot, other wise it would skip the following index
-				  divisors.remove(k--);
-				  break;
-		  }
-	  }
-	  k++;
-	  
-	}
-	// the remaining divisors will be the ones that arent factorable into any of the unfriendly numbers
-	System.out.println(divisors.size());
-  
-  }
-	   		   	
-}		
+    public static ArrayList<Long> primes() { 
+//        System.out.println(sqN);
+
+        // initially assume all integers are prime
+        boolean[] isPrime = new boolean[sqN + 1];
+        for (int i = 2; i <= sqN; i++) {
+            isPrime[i] = true;
+        }
+
+        // mark non-primes <= N using Sieve of Eratosthenes
+        for (int i = 2; i*i <= sqN; i++) {
+
+            // if i is prime, then mark multiples of i as nonprime
+            // suffices to consider mutiples i, i+1, ..., N/i
+            if (isPrime[i]) {
+                for (int j = i; i*j <= sqN; j++) {
+                    isPrime[i*j] = false;
+                }
+            }
+        }
+         hash = new Hashtable<Long, Integer>();
+        ArrayList<Long> list1 = new ArrayList<Long>();
+//        hash.put((long)1, 1);
+//        hash.put(K, 1);
+        // count primes
+        for (int i = 2; i <= sqN; i++) 
+        {
+            if (isPrime[i])
+            {
+//            	System.out.println(i);
+    			if(K % i==0)
+    			{
+    		        hash.put((long)i, 1);
+//    				hash.put(K/i,1);
+    				long temp = K;
+    				int temp2 = 1;
+    				int itemp = i*i;
+    				while(temp%itemp==0)
+    				{
+
+        		        hash.put((long)i, ++temp2);
+//    					list1.add(K/itemp);
+    					itemp*=i;
+    				}
+    			}
+    	
+
+            }
+        }
+        
+       String s = "" ;
+       ArrayList<Long> ints = new ArrayList<Long>(); 
+       for (Enumeration e = hash.keys() ; e.hasMoreElements() ;) {
+           ints.add((Long) e.nextElement());
+
+       };
+       System.out.println(ints);
+       int length = ints.size();
+       for(int x = 0;x<length;x++)
+       {
+    	   
+    	   int z = hash.get((long)ints.get(x));
+//    	   if(z>1)
+    	   for(int a = 2;a<z+1;a++)
+    		   ints.add((long)Math.pow(ints.get(x), a));
+    	   
+    	   
+       }
+//       System.out.println(s);
+       System.out.println(ints);
+
+        return list1;
+    }
+
+    
+    public static int returnVal(){
+    	int k=0;
+    	System.out.println(primes);
+    	while(k<primes.size())
+    	{	
+    	  String[] nn = line2.split(" ");
+    	  for(int j=0;j<nn.length;j++)
+    	  {
+    		  long temp = Long.parseLong(nn[j]);
+//    		  System.out.println(temp);
+    		  if(temp % primes.get(k)==0)
+    		  {
+    			  // k-- to keep the index variable at the correct spot, other wise it would skip the following index
+    				  primes.remove(k--);
+    				  break;
+    		  }
+    	  }
+    	  k++;
+    	  
+    	}
+    	return(primes.size());
+
+    }
+}
