@@ -23,7 +23,7 @@ public class Solution
 
     public static void main(String[] args) {
 	    try {
-             //   	BufferedReader scan = new BufferedReader(new InputStreamReader(System.in));   
+                	//BufferedReader scan = new BufferedReader(new InputStreamReader(System.in));   
 
 			BufferedReader scan = new BufferedReader(new FileReader(args[0]));   
 
@@ -39,9 +39,9 @@ public class Solution
 //	    testValue = new BigInteger(Long.toString(Klong));
 	    //used for finding the factors. It is only necessary to go up to sqrt(K) because  every divisor comes with a pair
 	    sqN = ((int)Math.ceil(Math.sqrt(K)));
-	    System.out.println(N + " " + sqN);
+//	    System.out.println(N + " " + sqN);
         primes = primes();
-//        System.out.println(returnVal());
+        System.out.println(returnVal());
     }
 
 
@@ -78,14 +78,33 @@ public class Solution
     			if(K % i==0)
     			{
     		        hash.put((long)i, 1);
+    		        list1.add((long)i);
+    		        int listsize = list1.size();
+    		        for(int y=0;y<listsize;y++){
+    		        	long tempp = i*list1.get(y);
+    		        	if(K % tempp == 0){
+    		        	list1.add(tempp);
+    		        	hash.put(tempp,1);
+    		        	}
+    		        }
 //    				hash.put(K/i,1);
     				long temp = K;
     				int temp2 = 1;
     				int itemp = i*i;
     				while(temp%itemp==0)
     				{
-
-        		        hash.put((long)i, ++temp2);
+    					
+        		        hash.put((long)itemp,1 );
+        		        list1.add((long)itemp);
+        		        listsize = list1.size();
+//        		        System.out.println(listsize);
+        		        for(int y=0;y<listsize;y++){
+        		        	long tempp = i*list1.get(y);
+        		        	if(K % tempp == 0){
+        		        	list1.add(tempp);
+        		        	hash.put(tempp,1);
+        		        	}
+        		        }
 //    					list1.add(K/itemp);
     					itemp*=i;
     				}
@@ -94,35 +113,22 @@ public class Solution
 
             }
         }
-        
+        hash.put((long)1, 1);
        String s = "" ;
        ArrayList<Long> ints = new ArrayList<Long>(); 
-       for (Enumeration e = hash.keys() ; e.hasMoreElements() ;) {
+       for (Enumeration<Long> e = hash.keys() ; e.hasMoreElements() ;) {
            ints.add((Long) e.nextElement());
 
        };
-       System.out.println(ints);
-       int length = ints.size();
-       for(int x = 0;x<length;x++)
-       {
-    	   
-    	   int z = hash.get((long)ints.get(x));
-//    	   if(z>1)
-    	   for(int a = 2;a<z+1;a++)
-    		   ints.add((long)Math.pow(ints.get(x), a));
-    	   
-    	   
-       }
 //       System.out.println(s);
-       System.out.println(ints);
+//       System.out.println(ints);
 
-        return list1;
+        return ints;
     }
 
     
     public static int returnVal(){
     	int k=0;
-    	System.out.println(primes);
     	while(k<primes.size())
     	{	
     	  String[] nn = line2.split(" ");
