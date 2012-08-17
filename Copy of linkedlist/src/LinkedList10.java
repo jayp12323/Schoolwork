@@ -1,0 +1,558 @@
+//THIS IS A SAMPLE DESIGN AND FOR METHODS FOR A LINKED LIST WITH A POINTER TO THE TAIL
+// YOU WILL DO METHODS MARKED WITH ASTERIKS
+//  The interface is at the bottom of the file.
+// You need to add methods to the LinearNode class also AND DO THE NEXT METHOD IN THE ITERATOR CLASS
+
+// TO GET IT TO COMPILE I HAD TO PUT IN SOME RETURN STATEMENTS THAT ARE INACCURATE - CHANGE THEM
+
+// ALL LINKED LIST HAVE SPECIFICATIONS THAT NEED TO BE FOLLOWED
+// IN THIS CASE THAT MEANS,IMPLEMENTING REQUIRED EXCEPTIONS AND
+// ENSURING THAT AFTER ADDITIONS AND REMOVALS THE LIST IS INTACT
+// I HAVE GIVEN YOU THE SPECIFICATIONS FOR EACH METHOD 
+// YOU CANNOT IGNORE ANY SPECIFICATION OR THE INTEGRITY OF LIST WILL BE
+// COMPROMISED (AND YOUR GRADE AFFECTED)
+// PUT PRE AND POSTCONDITION FOR ALL METHODS  - I HAVE DONE SOME AS AN EXAMPLE
+// MAKE SURE TO IMPLEMENT AND DECREMENT COUNT WHERE NECESSARY
+
+/*Linked list with a notion of "current node."  At
+ *any time after iteration is initialized, one node is the current
+ *node, until iteration has moved beyond the end of the list.
+ *When find is called current is placed on the List.  For add, it is node after which a node
+ *will be added, for remove, it is the node to be removed
+ *****************************************************************/
+  //NOTE WELL- The Linear Node class needs constructors and setter and getters
+  // YOU MUST IMPLEMENT NEXT() METHOD IN ITERATOR CLASS
+import java.util.*;
+
+import java.util.Iterator;
+
+public class LinkedList10<T> implements ListADT<T>
+{
+   protected int count;
+   protected LinearNode<T> head, tail, current, previous;
+
+   //===========================================================
+   //  Creates an empty list.
+   //===========================================================
+  public LinkedList10() 
+  {
+      count = 0;
+      head = tail = null;
+      current = null;
+      previous = null;
+   }  // constructor List
+
+/**************************************************************
+// Precondition: head is the head reference of a linked list.
+// The list might be empty or it might be non-empty.
+//  PostCondition: One node has been added to the list.
+//**************************************************************/
+  public void insertFirst(T addData)
+  {
+	  // create a node
+	  LinearNode newnode = new LinearNode(addData);
+	
+	   if(isEmpty())
+	   {// is the list is empty
+	      head = newnode;  // point head to the new node
+	   		tail =head;
+	   		current = head;
+	   }
+	   else  // list is not empty
+	   {  
+	           newnode.next = head ;
+	           head = newnode;
+	           current = head;// point head to newnode
+	   }
+	   count++;
+  }
+
+/**************************************************************
+// this method calls insertAfter method after it finds the node it wants to insert a node after
+/**************************************************************/
+public boolean Insert(T target, T addData)//*************************
+{
+   // calls find 
+	current = find(target);
+	
+	if(current != null)
+		insertAfter(addData);
+	
+	else
+		insertFirst(addData);
+ // if  target is found 
+ //the method calls insertafter(addData) WHICH DOES THE ACTUAL INSERT 
+	
+return false;  // this is just here to allow it to compile
+}
+/*****************************************************************
+// inserts a node at the end of the tail
+// CHECKS IF THE LIST IS EMPTY FIRST AND CALLS INSERTFIRST
+// ELSE INSERTS ON THE END OF THE LIST
+/******************************************************************/
+public void insertTail(T target )//******************
+{
+LinearNode node = new LinearNode(target);
+	if(current == null)
+	{
+		insertFirst(target);
+	}
+
+	tail.next=node;
+	previous = tail;
+	tail = current = node;
+	count++;
+}
+
+
+   //===========================================================
+   // Precondition:  The List is not empty
+   //  Removes the first element in the list and returns a reference
+   //  to it.  Throws an EmptyListException if the list is empty.
+   //===========================================================
+   public T removeFirst() throws EmptyCollectionException //*************************
+	{
+	   
+      head = head.getNext();			
+      // delete the first node
+      // return the data;
+      current = head;
+      count--;
+      return current.getElement();  // this is to get it to compile  - change it
+   } // method removeFirst
+
+  /**************************************************************
+     *Inserts node with newData after the node current points to. The current
+     *node is the same AFTER THE NODE IS INSERTED
+     *Should not be used with an empty list. Should not be
+     *used when the current node IS NULL.
+  /*******Before insertAfter is called current must be pointing to A  node on the list
+     **************************************************************/
+    public void insertAfter(T newData)//*****************
+    { 
+    	  LinearNode newnode = new LinearNode(newData);
+   	   if(isEmpty())
+   	   {// is the list is empty
+   	      head =  newnode; 
+   	      current =head;// point head to the new node
+   	   }
+   	   
+   	   if(current!=tail)  // list is not empty
+   	   {  
+   	           newnode.next = current.next;
+   	           current.next = newnode;
+   	           current = newnode;// point head to newnode
+   	   }
+   	  if(current==tail)  // list is not empty
+  	   {  
+   		  		previous = current;
+  	           current.next = newnode;
+  	           current = newnode;// point head to newnode
+  	   }
+   	   count++;
+	 }// close find
+    
+/*********************************************************
+Finds the first node containing the target data, and returns a
+reference to that node. If key is not in the list, null is returned.
+*********************************************************/
+ public LinearNode<T> find(T target) // WE DID THIS IN CLASS
+	 {
+      if (!isEmpty())
+      {   
+    	  LinearNode node = new LinearNode(target);;
+
+    	  Boolean found=false;
+		// set up a for loop with current initialed to point to what head is pointing to.
+	       
+		 // inside the loop compare the element current is presently pointing to, to target
+		 // if they are equal return current.element
+		 // advance previous so that it follows current
+    	  current = head;
+    	  previous = null;
+
+  		while(found == false && current !=null)
+  		{
+  			if(node.getElement().equals(current.getElement()))
+  			{
+  				return current;
+  			}
+  			else
+  			{
+	  			previous = current;
+	  			current = current.next;
+  			}
+  		}
+      }
+    	  return null;
+   }    // close method
+  
+   //===========================================================
+//  Precondition: Throws an EmptyListException if the list is empty. 
+// Throws a  NoSuchElementException if the specified element is not found on the list.
+//  PostCondition:Removes the first instance of the specified element from the
+//  list if it is found in the list and returns a reference to it.
+// SEVERAL SITUATIONS MUST BE HANDLED AS LISTED BELOW
+      //===========================================================
+	public T remove (T data) throws  EmptyCollectionException, ElementNotFoundException //**************
+   {
+		LinearNode node = find(data);
+		if(isEmpty())
+		{
+			EmptyCollectionException ece = new EmptyCollectionException("List is empty");
+			throw ece;
+		}
+		
+	 if(node!=null)
+	 {
+  			   // MAKE SURE TARGET IS ON THE LIST  
+			  
+			   // conditions you have to address:		  
+     	//(1) if there is only one node on the list 
+		  if(size() == 1)
+		  {
+			  head = current = tail = previous = null;
+}
+       //(2) if (current points to head node and there is more than one node on the list 
+		    if(current==head && current.next!=null)
+		    {
+		        head = current.next;
+		        current = head;
+		    }
+  
+            
+       //  (3) else if current equals tail - we are at the last node - HINT - USE PREVIOUS 
+		    if(current==tail)
+		    {
+		    	previous.next = null;
+		   	   	current = previous;
+		   	   	
+		   }    
+	 
+       //(4)IF NONE OF THE ABOVE IS TRUE  we are somewhere in the middle of the list
+	     // where current is pointing to node to be deleted
+		// and previous is right behind it - delete THAT  node 
+		    else
+		    {
+		        previous.next =current =  current.next;
+		    }
+		 }
+	 	count--;
+		    // return the removed element
+         return  null;// this is just to get it to compile
+         
+   }  // method remove
+   
+   
+	//===========================================================
+   //  Removes the last element in the list and returns a reference
+   //  to it.  Throws an EmptyListException if the list is empty.
+	// CALLS FIND TO LOCATE CURRENT ON THE TAIL NODE 
+	// DETERMINES FIRST IF THE THERE IS ONLY ONE NODE AND THEN DELETES THAT
+   //===========================================================
+   
+
+   public T removeLast() throws EmptyCollectionException //*******************************
+	{
+	   LinearNode<T> result = find(tail.getElement());
+	   previous.next = null;
+	   tail = previous;
+	   current = tail;
+      // remove last node
+      			
+	   count--;
+      return result.getElement();// was result
+
+
+     
+   } // method removeLast
+   
+   public T removehighest() throws EmptyCollectionException //*******************************
+   {
+	    LinearNode<T> temp = head;
+	while(temp.next != null)
+	{
+		
+		if(temp.getElement().toString().compareToIgnoreCase(temp.next.getElement().toString())==-1);
+			temp = temp.next;
+			
+	}
+	remove(temp.getElement());
+	return(temp.getElement());
+}
+   
+
+   //===========================================================
+   //  Finds the first instance of the specified element from the
+   //  list if it is found in the list and returns true. 
+   //  Returns false otherwise.  Calls the find method to find target                                     
+   //===========================================================
+   public boolean contains (T targetElement) throws  EmptyCollectionException //****************
+   {
+       if(isEmpty())
+    	   throw new EmptyCollectionException("empty");// throws exception if list is empty  
+	   LinearNode<T> result = find(targetElement);
+	  return(result!=null); // To satisfy the compiler
+  
+   }  // method contains 
+   
+ 
+   //===========================================================
+   //  Returns true if the list is empty and false otherwise
+   //===========================================================
+   public boolean isEmpty() 
+	{
+      return (count == 0);
+   }  // method isEmpty
+
+   //===========================================================
+   //  Returns the number of elements in the list.
+   //===========================================================
+   public int size() //*******************
+	{
+      // put in code
+		return count;  // CHANGE THIS< IT IS TO GET IT TO COMPILE
+   }  // method size
+
+
+
+ //===========================================================
+   //  Returns ... 
+   //===========================================================
+   public Iterator<T> iterator() 
+	{
+      return new LinkedIterator<T>(head, count);
+   }  // method elements
+
+
+   //===========================================================
+   //  Returns a string representation of the list.
+   //===========================================================
+	  public String toString() //*******************************
+	{
+// LinearNode<T> temp = head;
+  String result = "";
+   Iterator<T> iter = iterator();
+   
+//		
+//   while (temp !=null) 
+//		{
+//	   result += temp.getElement()+ " ";
+//	   temp = temp.next;
+//		}
+
+   
+   while(iter.hasNext())
+   {
+	   T element = iter.next();
+	   result += element.toString() + "\n";  
+   }
+   
+   return result;
+   } // method toString
+
+     //===========================================================
+   //  Returns the first element of the list. 
+   //===========================================================
+   public T first() //***************************
+     {
+      // put in code
+	   
+		  return head.getElement();  // this is to get it to compile  - change it
+
+   }  // method firstElement
+
+   //===========================================================
+   //  Returns the last element of the list. 
+   //===========================================================
+   public T last()//********************
+	 {
+     // put in code
+	    return tail.getElement();  // this is to get it to compile  - change it
+
+   }  // method lastElement
+
+}  // class LinkedList
+
+
+class EmptyCollectionException extends RuntimeException
+{
+   //-----------------------------------------------------------------
+   //  Sets up this exception with an appropriate message.
+   //-----------------------------------------------------------------
+   public EmptyCollectionException (String collection)
+   {
+      super ("The " + collection + " is empty.");
+   }
+}
+
+  class LinkedIterator<T> implements Iterator
+    {
+       private int count;  // the number of elements in the collection
+       private LinearNode<T> current, previous2;  // the current position
+    
+       //-------------------------------------------------------------
+       //  Sets up this iterator using the specified items.
+       //-------------------------------------------------------------
+       public LinkedIterator (LinearNode<T> collection, int size)
+       {
+          current = collection;
+          count = size;
+       }
+    
+       //-------------------------------------------------------------
+       //  Returns true if this iterator has at least one more element
+       //  to deliver in the iteraion.
+       //-------------------------------------------------------------
+       public boolean hasNext()
+       {
+          return (current!= null);
+       }
+       
+       public boolean hasPrevious()
+       {
+          return (previous2!= null);
+       }
+    
+       //-------------------------------------------------------------
+       //  Returns the next element in the iteration. If there are no
+       //  more elements in this itertion, a NoSuchElementException is
+       //  thrown.
+       //-------------------------------------------------------------
+       public T next() //*********************************************
+       {
+    	   if (! hasNext())
+             throw new NoSuchElementException();
+          T element = current.getElement();  // get the data
+          current = current.getNext();   // advance to the next node
+          return element;
+            // this is to get it to compile  - change it
+       }
+    
+       public T previous() //*********************************************
+       {
+    	   if (! hasPrevious())
+             throw new NoSuchElementException();
+          T element = previous2.getElement();  // get the data
+          previous2 = previous2.getPrevious();   // advance to the next node
+          return element;
+            // this is to get it to compile  - change it
+       }
+       
+       //-------------------------------------------------------------
+       //  The remove operation is not supported.
+       //-------------------------------------------------------------
+       public void remove() throws UnsupportedOperationException
+       {
+          throw new UnsupportedOperationException();
+       }
+    }
+
+class ElementNotFoundException extends RuntimeException
+{
+   //-----------------------------------------------------------------
+   //  Sets up this exception with an appropriate message.
+   //-----------------------------------------------------------------
+   public ElementNotFoundException (String collection)
+   {
+      super ("The target element is not in this " + collection);
+   }
+}
+
+interface ListADT<T>
+{
+   //  Removes and returns the first element from this list
+   public T removeFirst ();
+
+  
+   //  Removes and returns the specified element from this list
+   public T remove (T element);
+
+   //  Returns a reference to the first element on this list
+   public T first ();
+
+   //  Returns a reference to the last element on this list
+   public T last ();
+
+   //  Returns true if this list contains the specified target element
+   public boolean contains (T target);
+
+   //  Returns true if this list contains no elements
+   public boolean isEmpty();
+
+   //  Returns the number of elements in this list
+   public int size();
+
+   //  Returns an iterator for the elements in this list
+   public Iterator<T> iterator();
+
+   //  Returns a string representation of this list
+   public String toString();
+}
+
+ //************************************************************
+ //  LinearNode.java      
+ //
+ //  Represents a node in a linked list.
+ //************************************************************
+ 
+// YOU MUST PUT IN MORE SETTERS and GETTERS
+
+class LinearNode<T>
+ {
+    public LinearNode<T> next, previous2;
+    private T element;
+ 
+    //---------------------------------------------------------
+    //  Creates an empty node.
+    //---------------------------------------------------------
+    
+    public LinearNode (T elem)
+    {
+    	next = null;
+    	element = elem;
+    	previous2 = null;
+    }
+
+
+       public LinearNode ()
+       {
+          next = null;
+          element = null;
+          previous2 = null;
+       }
+       
+
+       
+       public LinearNode<T> getNext()
+       {
+          return next;
+       }
+       
+       public void setNext (LinearNode<T> node)
+       {
+          next = node;
+       }
+       
+       public LinearNode<T> getPrevious()
+       {
+          return previous2;
+       }
+
+       public void setPrevious (LinearNode<T> node)
+       {
+          previous2 = node;
+       }
+       
+       public T getElement()
+       {
+          return element;
+       }
+    
+       
+       public void setElement (T elem)
+       {
+          element = elem;
+       }
+   }
+ 
