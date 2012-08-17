@@ -1,78 +1,35 @@
-import java.util.LinkedList;
-import java.util.Scanner;
+//THIS IS A SAMPLE DESIGN AND FOR METHODS FOR A LINKED LIST WITH A POINTER TO THE TAIL
+// YOU WILL DO METHODS MARKED WITH ASTERIKS
+//  The interface is at the bottom of the file.
+// You need to add methods to the LinearNode class also AND DO THE NEXT METHOD IN THE ITERATOR CLASS
+
+// TO GET IT TO COMPILE I HAD TO PUT IN SOME RETURN STATEMENTS THAT ARE INACCURATE - CHANGE THEM
+
+// ALL LINKED LIST HAVE SPECIFICATIONS THAT NEED TO BE FOLLOWED
+// IN THIS CASE THAT MEANS,IMPLEMENTING REQUIRED EXCEPTIONS AND
+// ENSURING THAT AFTER ADDITIONS AND REMOVALS THE LIST IS INTACT
+// I HAVE GIVEN YOU THE SPECIFICATIONS FOR EACH METHOD 
+// YOU CANNOT IGNORE ANY SPECIFICATION OR THE INTEGRITY OF LIST WILL BE
+// COMPROMISED (AND YOUR GRADE AFFECTED)
+// PUT PRE AND POSTCONDITION FOR ALL METHODS  - I HAVE DONE SOME AS AN EXAMPLE
+// MAKE SURE TO IMPLEMENT AND DECREMENT COUNT WHERE NECESSARY
+
+/*Linked list with a notion of "current node."  At
+ *any time after iteration is initialized, one node is the current
+ *node, until iteration has moved beyond the end of the list.
+ *When find is called current is placed on the List.  For add, it is node after which a node
+ *will be added, for remove, it is the node to be removed
+ *****************************************************************/
+  //NOTE WELL- The Linear Node class needs constructors and setter and getters
+  // YOU MUST IMPLEMENT NEXT() METHOD IN ITERATOR CLASS
 import java.util.*;
 
 import java.util.Iterator;
 
-
-//************************************************************
-// You will implement the following methods as described in the main method
-//  The class LinearNode has been provided for you to use to create nodes 
-//  
-//************************************************************
-	class Solution{
-		public static void main( String args[] ){
-			
-	// helpers for input/output		
-
-			Scanner in = new Scanner(System.in);
-				LinkedList10<Integer> list = new LinkedList10<Integer>();
-
-			int N;
-			N = in.nextInt();
-		
-			String s = "";
-			int x;
-			
-			for(int i=0; i<N; i++){
-				s = in.next();
-				x = in.nextInt();
-				
-				
-				if (s.equalsIgnoreCase("r"))
-				{
-				if (list.isEmpty())
-					System.out.println("Wrong!");
-				
-				
-				
-				}
-				else
-				{
-				if (list.isEmpty())
-					list.insertFirst(x);
-				
-				
-				
-				}
-			}
-		
-
-			
-		
-	
-// Code a linked list as pictured in the project specification which contains String B, E and J  and perform the following operations. 
-// After each operation print out the list:
-
-// do the appropriate System.out printlns for each operation
-
-// int f = 5;
-// int t = 10;
-// int two = 2;
-// list.insertFirst(f);
-// list.insertPrevious(t);
-// list.insertAfter(two);
-// System.out.println(list);
-
-
-//  1.  insert B into the list
-}
-	}
-	
-class LinkedList10<T> implements ListADT<T>
+public class LinkedList10<T> implements ListADT<T>
 {
    protected int count;
-   protected LinearNode<T> head, tail, current, previous, med,next;
+   protected LinearNode<T> head, tail, current, previous;
 
    //===========================================================
    //  Creates an empty list.
@@ -83,7 +40,6 @@ class LinkedList10<T> implements ListADT<T>
       head = tail = null;
       current = null;
       previous = null;
-	  med = null;
    }  // constructor List
 
 /**************************************************************
@@ -101,15 +57,12 @@ class LinkedList10<T> implements ListADT<T>
 	      head = newnode;  // point head to the new node
 	   		tail =head;
 	   		current = head;
-			med = current;
 	   }
 	   else  // list is not empty
 	   {  
 	           newnode.next = head ;
 	           head = newnode;
 	           current = head;// point head to newnode
-			   // if(count %2 ==0)
-				
 	   }
 	   count++;
   }
@@ -123,7 +76,7 @@ public boolean Insert(T target, T addData)//*************************
 	current = find(target);
 	
 	if(current != null)
-		insertAfter((Integer)addData);
+		insertAfter(addData);
 	
 	else
 		insertFirst(addData);
@@ -167,8 +120,6 @@ LinearNode node = new LinearNode(target);
       count--;
       return current.getElement();  // this is to get it to compile  - change it
    } // method removeFirst
-   
-
 
   /**************************************************************
      *Inserts node with newData after the node current points to. The current
@@ -177,9 +128,9 @@ LinearNode node = new LinearNode(target);
      *used when the current node IS NULL.
   /*******Before insertAfter is called current must be pointing to A  node on the list
      **************************************************************/
-    public void insertAfter(int target)//*****************
+    public void insertAfter(T newData)//*****************
     { 
-    	  LinearNode newnode = new LinearNode(target);
+    	  LinearNode<T> newnode = new LinearNode<T>(newData);
    	   if(isEmpty())
    	   {// is the list is empty
    	      head =  newnode; 
@@ -201,31 +152,6 @@ LinearNode node = new LinearNode(target);
    	   count++;
 	 }// close find
     
-	    public void insertPrevious(T newData)//*****************
-    { 
-    	  LinearNode newnode = new LinearNode(newData);
-   	   if(isEmpty())
-   	   {// is the list is empty
-   	      head =  newnode; 
-   	      current =head;// point head to the new node
-   	   }
-   	   
-   	   if(current!=head)  // list is not empty
-   	   {  
-   	           newnode.previous = current.previous;
-   	           current.previous = newnode;
-			   newnode.next = current;
-   	           current = newnode;// point head to newnode
-   	   }
-   	  if(current==head)  // list is not empty
-  	   {  
-  	           newnode.next = current;
-			   current.previous = newnode;
-  	           head = current = newnode;//			   point head to newnode
-				previous = null;
-  	   }
-   	   count++;
-	 }
 /*********************************************************
 Finds the first node containing the target data, and returns a
 reference to that node. If key is not in the list, null is returned.
@@ -242,7 +168,8 @@ reference to that node. If key is not in the list, null is returned.
 		 // inside the loop compare the element current is presently pointing to, to target
 		 // if they are equal return current.element
 		 // advance previous so that it follows current
-    	  current = med;
+    	  current = head;
+    	  previous = null;
 
   		while(found == false && current !=null)
   		{
@@ -257,108 +184,8 @@ reference to that node. If key is not in the list, null is returned.
   			}
   		}
       }
-	 
     	  return null;
-		  
    }    // close method
-  
-   public LinearNode<T> findL(T target) // WE DID THIS IN CLASS
-	 {
-      if (!isEmpty())
-      {   
-    	  LinearNode node = new LinearNode(target);;
-
-    	  Boolean found=false;
-		// set up a for loop with current initialed to point to what head is pointing to.
-	       
-		 // inside the loop compare the element current is presently pointing to, to target
-		 // if they are equal return current.element
-		 // advance previous so that it follows current
-    	  current = med;
-
-  		while(found == false && current !=null)
-  		{
-  			if(node.getElement().equals(current.getElement()))
-  			{
-  				return current;
-  			}
-  			else
-  			{
-	  			previous = current;
-	  			current = current.previous;
-  			}
-  		}
-      }
-	 
-    	  return null;
-		  
-   }    // close method
-   
-   public LinearNode<T> compareadd(int target) // WE DID THIS IN CLASS
-	 {
-	   LinearNode<Integer> node = new LinearNode<Integer>(target);
-      if (!isEmpty())
-      {   
-		if((Integer)med.getElement() < target)
-		{
-	    	  Boolean found=false;
-			// set up a for loop with current initialed to point to what head is pointing to.
-		       
-			 // inside the loop compare the element current is presently pointing to, to target
-			 // if they are equal return current.element
-			 // advance previous so that it follows current
-	    	  current = med;
-			  previous = current.previous;
-	
-	  		while(found == false && current !=null)
-	  		{
-	  			if((Integer)current.getElement() <= target)
-	  			{
-	  				insertAfter(target);
-	  			}
-	  			else
-	  			{
-		  			next = current;
-		  			current = current.previous;
-	  			}
-	  		}
-		}
-	  
-		if((Integer)med.getElement() < target)
-		{
-			Boolean found=false;
-			// set up a for loop with current initialed to point to what head is pointing to.
-		       
-			 // inside the loop compare the element current is presently pointing to, to target
-			 // if they are equal return current.element
-			 // advance previous so that it follows current
-	    	  current = med;
-	
-	  		while(found == false && current !=null)
-	  		{
-	  			if((Integer)current.getElement() >= target)
-	  			{
-	  				insertAfter(target);
-	  			}
-	  			else
-	  			{
-		  			previous = current;
-		  			current = current.next;
-	  			}
-	  		}
-		}
-	  
-	  if((Integer)med.getElement() == target)
-		{
-    	 
-    	  current = med;
-    	  this.insertAfter(target);
-		}
-      }
-	  return null;
-	  
-       // close method
-   }
   
    //===========================================================
 //  Precondition: Throws an EmptyListException if the list is empty. 
@@ -439,7 +266,20 @@ reference to that node. If key is not in the list, null is returned.
 
      
    } // method removeLast
-
+   
+   public T removehighest() throws EmptyCollectionException //*******************************
+   {
+	    LinearNode<T> temp = head;
+	while(temp.next != null)
+	{
+		
+		if(temp.getElement().toString().compareToIgnoreCase(temp.next.getElement().toString())==-1);
+			temp = temp.next;
+			
+	}
+	remove(temp.getElement());
+	return(temp.getElement());
+}
    
 
    //===========================================================
@@ -660,7 +500,7 @@ interface ListADT<T>
 
 class LinearNode<T>
  {
-    public LinearNode<T> next, previous;
+    public LinearNode<T> next, previous2;
     private T element;
  
     //---------------------------------------------------------
@@ -671,7 +511,7 @@ class LinearNode<T>
     {
     	next = null;
     	element = elem;
-    	previous = null;
+    	previous2 = null;
     }
 
 
@@ -679,7 +519,7 @@ class LinearNode<T>
        {
           next = null;
           element = null;
-          previous = null;
+          previous2 = null;
        }
        
 
@@ -696,12 +536,12 @@ class LinearNode<T>
        
        public LinearNode<T> getPrevious()
        {
-          return previous;
+          return previous2;
        }
 
        public void setPrevious (LinearNode<T> node)
        {
-          previous = node;
+          previous2 = node;
        }
        
        public T getElement()

@@ -296,67 +296,66 @@ reference to that node. If key is not in the list, null is returned.
    
    public LinearNode<T> compareadd(int target) // WE DID THIS IN CLASS
 	 {
-	   LinearNode<Integer> node = new LinearNode<Integer>(target);
+	   LinearNode node = new LinearNode(target);
       if (!isEmpty())
       {   
 		if((Integer)med.getElement() < target)
 		{
-	    	  Boolean found=false;
-			// set up a for loop with current initialed to point to what head is pointing to.
-		       
-			 // inside the loop compare the element current is presently pointing to, to target
-			 // if they are equal return current.element
-			 // advance previous so that it follows current
-	    	  current = med;
-			  previous = current.previous;
-	
-	  		while(found == false && current !=null)
-	  		{
-	  			if((Integer)current.getElement() <= target)
-	  			{
-	  				insertAfter(target);
-	  			}
-	  			else
-	  			{
-		  			next = current;
-		  			current = current.previous;
-	  			}
-	  		}
-		}
+    	  Boolean found=false;
+		// set up a for loop with current initialed to point to what head is pointing to.
+	       
+		 // inside the loop compare the element current is presently pointing to, to target
+		 // if they are equal return current.element
+		 // advance previous so that it follows current
+    	  current = med;
+		  previous = current.previous;
+
+  		while(found == false && current !=null)
+  		{
+  			if((Integer)current.getElement() <= target)
+  			{
+  				insertAfter(target);
+  			}
+  			else
+  			{
+	  			next = current;
+	  			current = current.previous;
+  			}
+  		}
+      }
 	  
-		if((Integer)med.getElement() < target)
+	  if((Integer)med.getElement() < target)
 		{
-			Boolean found=false;
-			// set up a for loop with current initialed to point to what head is pointing to.
-		       
-			 // inside the loop compare the element current is presently pointing to, to target
-			 // if they are equal return current.element
-			 // advance previous so that it follows current
-	    	  current = med;
-	
-	  		while(found == false && current !=null)
-	  		{
-	  			if((Integer)current.getElement() >= target)
-	  			{
-	  				insertAfter(target);
-	  			}
-	  			else
-	  			{
-		  			previous = current;
-		  			current = current.next;
-	  			}
-	  		}
-		}
+    	  Boolean found=false;
+		// set up a for loop with current initialed to point to what head is pointing to.
+	       
+		 // inside the loop compare the element current is presently pointing to, to target
+		 // if they are equal return current.element
+		 // advance previous so that it follows current
+    	  current = med;
+
+  		while(found == false && current !=null)
+  		{
+  			if((Integer)current.getElement() >= target)
+  			{
+  				insertAfter(target);
+  			}
+  			else
+  			{
+	  			previous = current;
+	  			current = current.next;
+  			}
+  		}
+      }
 	  
 	  if((Integer)med.getElement() == target)
 		{
     	 
     	  current = med;
-    	  this.insertAfter(target);
-		}
+	  }
       }
-	  return null;
-	  
+    	  return null;
+		  
        // close method
    }
   
